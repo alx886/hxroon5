@@ -21,6 +21,20 @@
             background-attachment: fixed;
             min-height: 100vh;
         }
+
+        .album-block {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .album-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(1.4);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body class="bg-artistic text-zinc-100">
@@ -31,6 +45,7 @@
                 <a href="#" class="text-xl font-bold tracking-tight uppercase">Haroon Abdullah</a>
                 <div class="flex items-center gap-6">
                     <a href="#about" class="text-sm font-medium hover:text-emerald-400 transition">About</a>
+                    <a href="#albums" class="text-sm font-medium hover:text-emerald-400 transition">Albums</a>
                     <a href="#gallery" class="text-sm font-medium hover:text-emerald-400 transition">Portfolio</a>
                     <a href="#contact" class="text-sm font-medium hover:text-emerald-400 transition">Contact</a>
                     <button id="loginBtn" onclick="toggleAuthModal()" class="text-sm font-medium border border-zinc-700 px-4 py-2 rounded-lg hover:bg-zinc-800 transition">
@@ -48,6 +63,7 @@
             <p class="text-zinc-400 max-w-2xl mx-auto text-lg">Capturing moments through a modern lens. Explore the curated selection of weddings, portraits, and landscapes.</p>
         </section>
 
+        <!-- About Section -->
         <section id="about" class="max-w-5xl mx-auto px-4 py-24 bg-zinc-900/30 backdrop-blur-sm rounded-3xl border border-zinc-800/50 mb-24">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div class="aspect-square rounded-2xl overflow-hidden bg-zinc-800">
@@ -69,6 +85,15 @@
             </div>
         </section>
 
+        <!-- Albums Section -->
+        <section id="albums" class="max-w-7xl mx-auto px-4 mb-24">
+            <h2 class="text-2xl font-bold mb-8 text-center">Featured Collections</h2>
+            <div id="albumGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Albums injected here -->
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
         <section class="max-w-7xl mx-auto px-4 mb-8">
             <div id="filters" class="flex flex-wrap justify-center gap-2">
                 <button onclick="filterGallery('All')" class="px-4 py-2 rounded-full border border-zinc-700 hover:border-emerald-500 hover:text-emerald-400 transition text-sm">All</button>
@@ -86,6 +111,7 @@
             </div>
         </section>
 
+        <!-- Contact Section -->
         <section id="contact" class="max-w-3xl mx-auto px-4 py-24">
             <h2 class="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
             <form class="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800 backdrop-blur-sm">
@@ -99,25 +125,32 @@
         </section>
     </main>
 
+    <!-- Admin Section -->
     <div id="adminSection" class="hidden max-w-7xl mx-auto px-4 py-12 border-t border-zinc-800 bg-zinc-950">
         <h2 class="text-2xl font-bold mb-8">Admin Dashboard</h2>
         <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
             <h3 class="text-lg font-semibold mb-4">Upload New Work</h3>
-            <form id="uploadForm" class="flex flex-col md:flex-row gap-4">
-                <input type="text" id="imgUrl" placeholder="Image URL" class="flex-1 bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700 focus:outline-none focus:border-emerald-500">
-                <input type="text" id="imgTitle" placeholder="Title" class="w-full md:w-32 bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
-                <select id="imgCategory" class="bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
-                    <option value="Weddings">Weddings</option>
-                    <option value="Receptions">Receptions</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Landscapes">Landscapes</option>
-                    <option value="Animals">Animals</option>
-                </select>
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg transition font-medium">Add</button>
+            <form id="uploadForm" class="flex flex-col gap-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="imgUrl" placeholder="Image URL" class="flex-1 bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700 focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="imgTitle" placeholder="Title" class="w-full md:w-32 bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
+                    <select id="imgCategory" class="bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
+                        <option value="Weddings">Weddings</option>
+                        <option value="Receptions">Receptions</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Landscapes">Landscapes</option>
+                        <option value="Animals">Animals</option>
+                    </select>
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer text-sm text-zinc-400">
+                    <input type="checkbox" id="isCover" class="accent-emerald-500"> Set as Album Cover
+                </label>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg transition font-medium w-full md:w-auto">Add Work</button>
             </form>
         </div>
     </div>
 
+    <!-- Auth Modal -->
     <dialog id="loginModal" class="bg-zinc-900 text-white p-8 rounded-2xl border border-zinc-700 backdrop:bg-black/80">
         <h2 class="text-xl font-bold mb-4">Admin Login</h2>
         <input type="password" id="passwordInput" placeholder="Enter Password" class="w-full bg-zinc-800 rounded-lg px-4 py-2 mb-4 border border-zinc-700 focus:outline-none">
@@ -134,10 +167,20 @@
             { id: 3, src: "https://placehold.co/800x600/18181b/ffffff?text=Animals", title: "Wildlife", category: "Animals" }
         ];
 
+        let albumCovers = {
+            "Weddings": "https://placehold.co/800x600/18181b/ffffff?text=Wedding",
+            "Receptions": "https://placehold.co/800x600/18181b/ffffff?text=Receptions",
+            "Sports": "https://placehold.co/800x600/18181b/ffffff?text=Sports",
+            "Landscapes": "https://placehold.co/800x600/18181b/ffffff?text=Landscapes",
+            "Animals": "https://placehold.co/800x600/18181b/ffffff?text=Animals"
+        };
+
         const grid = document.getElementById('photoGrid');
+        const albumGrid = document.getElementById('albumGrid');
         let currentFilter = 'All';
 
         function renderGallery() {
+            // Render Photos
             const filtered = currentFilter === 'All' 
                 ? photos 
                 : photos.filter(p => p.category === currentFilter);
@@ -150,6 +193,17 @@
                         <span class="text-xs text-emerald-400">${p.category}</span>
                     </div>
                 </article>
+            `).join('');
+
+            // Render Albums
+            const categories = ["Weddings", "Receptions", "Sports", "Landscapes", "Animals"];
+            albumGrid.innerHTML = categories.map(cat => `
+                <div class="album-block h-48 rounded-2xl border border-white/10 p-6 flex flex-col justify-center items-center text-center">
+                    <div class="album-bg" style="background-image: url('${albumCovers[cat]}')"></div>
+                    <div class="relative z-10 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/10">
+                        <h3 class="text-xl font-bold tracking-wide">${cat}</h3>
+                    </div>
+                </div>
             `).join('');
         }
 
@@ -169,10 +223,9 @@
                 document.getElementById('adminPanelBtn').classList.remove('hidden');
                 closeModal();
             } else {
-                // Using a non-alert message box for better UX
                 const msg = document.createElement('div');
                 msg.className = "fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg";
-                msg.textContent = "Incorrect password (Hint: admin)";
+                msg.textContent = "Incorrect password";
                 document.body.appendChild(msg);
                 setTimeout(() => msg.remove(), 2000);
             }
@@ -183,8 +236,13 @@
             const src = document.getElementById('imgUrl').value;
             const title = document.getElementById('imgTitle').value;
             const category = document.getElementById('imgCategory').value;
+            const isCover = document.getElementById('isCover').checked;
+
             if(src && title) {
                 photos.push({ id: Date.now(), src, title, category });
+                if(isCover) {
+                    albumCovers[category] = src;
+                }
                 renderGallery();
                 e.target.reset();
             }
