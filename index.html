@@ -165,12 +165,13 @@
         let albumCovers = {};
         let currentFilter = 'All';
 
-        // The error 'auth/configuration-not-found' often occurs when Firebase Auth isn't enabled 
-        // in the project console or the config keys have issues. Ensure Auth is enabled in Firebase Console.
+        // Ahora iniciamos la autenticación correctamente
         const initAuth = async () => {
             try {
                 await signInAnonymously(auth);
+                console.log("Signed in anonymously");
                 
+                // Una vez autenticado, cargamos los datos
                 onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), (snapshot) => {
                     photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderGallery();
@@ -183,8 +184,7 @@
                 }, (err) => console.error("Snapshot error:", err));
 
             } catch (error) {
-                console.error("Auth error, trying to continue without auth:", error);
-                // Fallback: If auth fails, try to fetch data anyway if rules permit
+                console.error("Auth error:", error);
             }
         };
 
