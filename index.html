@@ -134,7 +134,9 @@
 
     <dialog id="loginModal" class="bg-zinc-900 text-white p-8 rounded-2xl border border-zinc-700 backdrop:bg-black/80">
         <h2 class="text-xl font-bold mb-4">Admin Login</h2>
-        <input type="password" id="passwordInput" placeholder="Enter Password" class="w-full bg-zinc-800 rounded-lg px-4 py-2 mb-4 border border-zinc-700 focus:outline-none">
+        <input type="email" id="emailInput" placeholder="Email Address" class="w-full bg-zinc-800 rounded-lg px-4 py-2 mb-2 border border-zinc-700 focus:outline-none">
+        <input type="password" id="passwordInput" placeholder="Password" class="w-full bg-zinc-800 rounded-lg px-4 py-2 mb-4 border border-zinc-700 focus:outline-none">
+        <div id="loginError" class="text-red-400 text-sm mb-4 hidden"></div>
         <div class="flex gap-2">
             <button onclick="handleLogin()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg font-medium">Login</button>
             <button onclick="closeModal()" class="text-zinc-400 hover:text-white px-4 py-2">Cancel</button>
@@ -143,7 +145,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -165,6 +167,7 @@
         let albumCovers = {};
         let currentFilter = 'All';
 
+        // Initialize anonymously for public view
         const initAuth = async () => {
             try {
                 await signInAnonymously(auth);
@@ -173,17 +176,17 @@
                         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), (snapshot) => {
                             photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                             renderGallery();
-                        }, (err) => console.error("Photos Snapshot error:", err));
+                        }, (err) => console.error("Photos Snapshot error:", err.message));
 
                         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'albumCovers'), (snapshot) => {
                             albumCovers = {};
                             snapshot.docs.forEach(d => albumCovers[d.id] = d.data().src);
                             renderGallery();
-                        }, (err) => console.error("Covers Snapshot error:", err));
+                        }, (err) => console.error("Covers Snapshot error:", err.message));
                     }
                 });
             } catch (error) {
-                console.error("Auth initialization error:", error);
+                console.error("Auth initialization error:", error.message);
             }
         };
 
@@ -219,16 +222,26 @@
         window.toggleAuthModal = () => document.getElementById('loginModal').showModal();
         window.closeModal = () => document.getElementById('loginModal').close();
 
-        window.handleLogin = () => {
-            if(document.getElementById('passwordInput').value === "admin") {
+        window.handleLogin = async () => {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorEl = document.getElementById('loginError');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
                 document.getElementById('adminSection').classList.remove('hidden');
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('adminPanelControls').classList.remove('hidden');
+                errorEl.classList.add('hidden');
                 closeModal();
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
             }
         };
 
-        window.handleLogout = () => {
+        window.handleLogout = async () => {
+            await signOut(auth);
             document.getElementById('adminSection').classList.add('hidden');
             document.getElementById('loginBtn').classList.remove('hidden');
             document.getElementById('adminPanelControls').classList.add('hidden');
@@ -241,11 +254,15 @@
             const category = document.getElementById('imgCategory').value;
             const isCover = document.getElementById('isCover').checked;
 
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), { src, title, category });
-            if(isCover) {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'albumCovers', category), { src });
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), { src, title, category });
+                if(isCover) {
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'albumCovers', category), { src });
+                }
+                e.target.reset();
+            } catch (err) {
+                console.error("Upload error:", err.message);
             }
-            e.target.reset();
         });
     </script>
 </body>
