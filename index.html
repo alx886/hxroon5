@@ -7,18 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
         .gallery-item { transition: transform 0.3s ease-in-out; }
         .gallery-item:hover { transform: scale(1.02); }
         
-        .bg-artistic {
-            background-color: #050505;
-            background-image: 
-                radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.45), transparent 45%),
-                radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.45), transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.35), transparent 55%),
-                radial-gradient(circle at 75% 10%, rgba(167, 139, 250, 0.35), transparent 40%);
-            background-attachment: fixed;
+        .bg-refined {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
         }
 
@@ -32,25 +26,25 @@
             inset: 0;
             background-size: cover;
             background-position: center;
-            filter: blur(4px) brightness(1.4);
+            filter: blur(2px) brightness(0.7);
             transform: scale(1.1);
         }
     </style>
 </head>
-<body class="bg-artistic text-zinc-100">
+<body class="bg-refined text-slate-100">
 
-    <nav class="fixed w-full z-50 bg-zinc-950/70 backdrop-blur-md border-b border-white/5">
+    <nav class="fixed w-full z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <a href="#" class="text-xl font-bold tracking-tight uppercase">Haroon Abdullah</a>
+                <a href="#" class="text-xl font-bold tracking-tight uppercase text-emerald-400">Haroon Abdullah</a>
                 <div class="flex items-center gap-6">
                     <a href="#about" class="text-sm font-medium hover:text-emerald-400 transition">About</a>
                     <a href="#albums" class="text-sm font-medium hover:text-emerald-400 transition">Albums</a>
                     <a href="#gallery" class="text-sm font-medium hover:text-emerald-400 transition">Portfolio</a>
-                    <button id="loginBtn" onclick="toggleAuthModal()" class="text-sm font-medium border border-zinc-700 px-4 py-2 rounded-lg hover:bg-zinc-800 transition">Login</button>
+                    <button id="loginBtn" onclick="toggleAuthModal()" class="text-sm font-medium border border-slate-600 px-4 py-2 rounded-lg hover:bg-slate-800 transition">Login</button>
                     <div id="adminPanelControls" class="hidden flex items-center gap-4">
                         <div class="text-sm font-semibold text-emerald-400">Admin Mode</div>
-                        <button onclick="handleLogout()" class="text-sm text-zinc-400 hover:text-white underline">Logout</button>
+                        <button onclick="handleLogout()" class="text-sm text-slate-400 hover:text-white underline">Logout</button>
                     </div>
                 </div>
             </div>
@@ -59,71 +53,59 @@
 
     <main class="pt-32 pb-16">
         <section class="max-w-7xl mx-auto px-4 text-center mb-24">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-400">Visual Storytelling.</h1>
-        </section>
-
-        <section id="about" class="max-w-5xl mx-auto px-4 py-24 bg-zinc-900/30 backdrop-blur-sm rounded-3xl border border-zinc-800/50 mb-24">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="aspect-square rounded-2xl overflow-hidden bg-zinc-800">
-                    <img src="https://i.ibb.co/QjK1bW26/haroon.jpg" alt="Haroon Abdullah" class="w-full h-full object-cover">
-                </div>
-                <div>
-                    <h2 class="text-3xl font-bold mb-6">About Haroon</h2>
-                    <p class="text-zinc-400 mb-6 leading-relaxed">
-                        Haroon Abdullah is a visual storyteller whose lens captures the unspoken emotions and grand narratives of every moment. 
-                        With an unwavering eye for composition and light, Haroon's trajectory is defined by a relentless pursuit of authenticity.
-                    </p>
-                </div>
-            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white">Visual Storytelling.</h1>
         </section>
 
         <section id="albums" class="max-w-7xl mx-auto px-4 mb-24">
-            <h2 class="text-2xl font-bold mb-8 text-center">Featured Collections</h2>
+            <h2 class="text-2xl font-bold mb-8 text-center text-emerald-400">Featured Collections</h2>
             <div id="albumGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <section id="gallery" class="max-w-7xl mx-auto px-4 mb-8">
-            <h2 class="text-2xl font-bold mb-8 text-center">Portfolio</h2>
+            <h2 class="text-2xl font-bold mb-8 text-center text-emerald-400">Portfolio</h2>
             <div id="filters" class="flex flex-wrap justify-center gap-2 mb-8">
-                <button onclick="filterGallery('All')" class="px-4 py-2 rounded-full border border-zinc-700 hover:border-emerald-500 transition text-sm">All</button>
+                <button onclick="filterGallery('All')" class="px-4 py-2 rounded-full border border-slate-600 hover:border-emerald-500 transition text-sm">All</button>
             </div>
             <div id="photoGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
     </main>
 
-    <div id="adminSection" class="hidden max-w-7xl mx-auto px-4 py-12 border-t border-zinc-800 bg-zinc-950">
+    <div id="adminSection" class="hidden max-w-7xl mx-auto px-4 py-12 border-t border-slate-800 bg-slate-900/50">
         <h2 class="text-2xl font-bold mb-8 text-emerald-400">Admin Dashboard</h2>
-        <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
             <h3 class="text-lg font-semibold mb-4">Upload New Work</h3>
             <form id="uploadForm" class="flex flex-col gap-4">
-                <input type="text" id="imgUrl" placeholder="Image URL" required class="bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700 w-full">
+                <input type="text" id="imgUrl" placeholder="Image URL" required class="bg-slate-900 rounded-lg px-4 py-2 border border-slate-700 w-full">
                 <div class="flex gap-4">
-                    <input type="text" id="imgTitle" placeholder="Title" required class="flex-1 bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
-                    <select id="imgCategory" class="bg-zinc-800 rounded-lg px-4 py-2 border border-zinc-700">
+                    <input type="text" id="imgTitle" placeholder="Title" required class="flex-1 bg-slate-900 rounded-lg px-4 py-2 border border-slate-700">
+                    <select id="imgCategory" class="bg-slate-900 rounded-lg px-4 py-2 border border-slate-700">
                         <option value="Weddings">Weddings</option><option value="Receptions">Receptions</option>
                         <option value="Sports">Sports</option><option value="Landscapes">Landscapes</option><option value="Animals">Animals</option>
                     </select>
                 </div>
+                <label class="flex items-center gap-2 text-sm text-slate-300">
+                    <input type="checkbox" id="isCover" class="accent-emerald-500"> Set as Album Cover
+                </label>
                 <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg font-medium transition">Add Work</button>
             </form>
         </div>
     </div>
 
-    <div id="lightbox" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
+    <div id="lightbox" class="hidden fixed inset-0 z-[100] bg-slate-950/95 flex items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
         <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl">
     </div>
 
-    <dialog id="loginModal" class="bg-zinc-900 text-white p-8 rounded-2xl border border-zinc-700">
+    <dialog id="loginModal" class="bg-slate-900 text-white p-8 rounded-2xl border border-slate-700">
         <h2 class="text-xl font-bold mb-4">Admin Login</h2>
-        <input type="email" id="emailInput" placeholder="Email" class="w-full bg-zinc-800 rounded-lg px-4 py-2 mb-2 border border-zinc-700">
-        <input type="password" id="passwordInput" placeholder="Password" class="w-full bg-zinc-800 rounded-lg px-4 py-2 mb-4 border border-zinc-700">
+        <input type="email" id="emailInput" placeholder="Email" class="w-full bg-slate-800 rounded-lg px-4 py-2 mb-2 border border-slate-700">
+        <input type="password" id="passwordInput" placeholder="Password" class="w-full bg-slate-800 rounded-lg px-4 py-2 mb-4 border border-slate-700">
         <button onclick="handleLogin()" class="bg-emerald-600 px-6 py-2 rounded-lg">Login</button>
     </dialog>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyBcstkacDgmWaxgu9M-7HussMFu4NF624w", authDomain: "haroon-s-photography.firebaseapp.com", projectId: "haroon-s-photography", storageBucket: "haroon-s-photography.firebasestorage.app", messagingSenderId: "678628031192", appId: "1:678628031192:web:14a6b61e654f5f933bb5ad" };
         const appId = 'haroon-photography-app'; 
@@ -131,7 +113,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        let photos = [], currentFilter = 'All', isAdmin = false;
+        let photos = [], albumCovers = {}, currentFilter = 'All', isAdmin = false;
 
         onAuthStateChanged(auth, (user) => {
             isAdmin = !!user;
@@ -146,14 +128,28 @@
             renderGallery();
         });
 
+        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'albumCovers'), (snapshot) => {
+            albumCovers = {};
+            snapshot.docs.forEach(d => albumCovers[d.id] = d.data().src);
+            renderGallery();
+        });
+
         window.filterGallery = (cat) => { currentFilter = cat; renderGallery(); };
 
         function renderGallery() {
             const filtered = currentFilter === 'All' ? photos : photos.filter(p => p.category === currentFilter);
             document.getElementById('photoGrid').innerHTML = filtered.map(p => `
-                <div class="gallery-item relative group cursor-pointer overflow-hidden rounded-xl" onclick="openLightbox('${p.src}')">
+                <div class="gallery-item relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700" onclick="openLightbox('${p.src}')">
                     <img src="${p.src}" class="w-full h-80 object-cover">
-                    ${isAdmin ? `<button onclick="event.stopPropagation(); deletePhoto('${p.id}')" class="absolute top-2 right-2 bg-red-600 p-2 rounded-full text-white text-xs">Delete</button>` : ''}
+                    ${isAdmin ? `<button onclick="event.stopPropagation(); deletePhoto('${p.id}')" class="absolute top-2 right-2 bg-red-600/90 p-2 rounded-full text-white text-xs">Delete</button>` : ''}
+                </div>
+            `).join('');
+
+            const cats = ["Weddings", "Receptions", "Sports", "Landscapes", "Animals"];
+            document.getElementById('albumGrid').innerHTML = cats.map(cat => `
+                <div class="album-block h-48 rounded-2xl border border-slate-700 flex flex-col justify-center items-center text-center cursor-pointer hover:border-emerald-500 transition" onclick="filterGallery('${cat}')">
+                    <div class="album-bg" style="background-image: url('${albumCovers[cat] || 'https://placehold.co/800x600/1e293b/ffffff?text=' + cat}')"></div>
+                    <span class="relative z-10 text-xl font-bold bg-slate-900/50 px-4 py-2 rounded-lg backdrop-blur-sm">${cat}</span>
                 </div>
             `).join('');
         }
@@ -167,9 +163,18 @@
             document.getElementById('loginModal').close();
         };
         window.handleLogout = () => signOut(auth);
+        
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), { src: document.getElementById('imgUrl').value, title: document.getElementById('imgTitle').value, category: document.getElementById('imgCategory').value });
+            const src = document.getElementById('imgUrl').value;
+            const title = document.getElementById('imgTitle').value;
+            const category = document.getElementById('imgCategory').value;
+            const isCover = document.getElementById('isCover').checked;
+            
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), { src, title, category });
+            if(isCover) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'albumCovers', category), { src });
+            }
             e.target.reset();
         });
     </script>
