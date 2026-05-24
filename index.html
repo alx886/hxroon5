@@ -62,21 +62,35 @@
             <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-400">Visual Storytelling.</h1>
         </section>
 
+        <section id="about" class="max-w-5xl mx-auto px-4 py-24 bg-zinc-900/30 backdrop-blur-sm rounded-3xl border border-zinc-800/50 mb-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="aspect-square rounded-2xl overflow-hidden bg-zinc-800">
+                    <img src="https://i.ibb.co/QjK1bW26/haroon.jpg" alt="Haroon Abdullah" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">About Haroon</h2>
+                    <p class="text-zinc-400 mb-6 leading-relaxed">
+                        Haroon Abdullah is a visual storyteller whose lens captures the unspoken emotions and grand narratives of every moment. 
+                        With an unwavering eye for composition and light, Haroon's trajectory is defined by a relentless pursuit of authenticity.
+                    </p>
+                </div>
+            </div>
+        </section>
+
         <section id="albums" class="max-w-7xl mx-auto px-4 mb-24">
             <h2 class="text-2xl font-bold mb-8 text-center">Featured Collections</h2>
             <div id="albumGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <section id="gallery" class="max-w-7xl mx-auto px-4 mb-8">
+            <h2 class="text-2xl font-bold mb-8 text-center">Portfolio</h2>
             <div id="filters" class="flex flex-wrap justify-center gap-2 mb-8">
                 <button onclick="filterGallery('All')" class="px-4 py-2 rounded-full border border-zinc-700 hover:border-emerald-500 transition text-sm">All</button>
-                <!-- Dynamic filter buttons generated in script -->
             </div>
             <div id="photoGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
     </main>
 
-    <!-- Admin Panel -->
     <div id="adminSection" class="hidden max-w-7xl mx-auto px-4 py-12 border-t border-zinc-800 bg-zinc-950">
         <h2 class="text-2xl font-bold mb-8 text-emerald-400">Admin Dashboard</h2>
         <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
@@ -95,7 +109,6 @@
         </div>
     </div>
 
-    <!-- Lightbox -->
     <div id="lightbox" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
         <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl">
     </div>
@@ -109,8 +122,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyBcstkacDgmWaxgu9M-7HussMFu4NF624w", authDomain: "haroon-s-photography.firebaseapp.com", projectId: "haroon-s-photography", storageBucket: "haroon-s-photography.firebasestorage.app", messagingSenderId: "678628031192", appId: "1:678628031192:web:14a6b61e654f5f933bb5ad" };
         const appId = 'haroon-photography-app'; 
@@ -121,16 +134,19 @@
         let photos = [], currentFilter = 'All', isAdmin = false;
 
         onAuthStateChanged(auth, (user) => {
-            isAdmin = !!user && !user.isAnonymous;
+            isAdmin = !!user;
             document.getElementById('adminSection').classList.toggle('hidden', !isAdmin);
             document.getElementById('loginBtn').classList.toggle('hidden', isAdmin);
             document.getElementById('adminPanelControls').classList.toggle('hidden', !isAdmin);
+            renderGallery();
         });
 
         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), (snapshot) => {
             photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderGallery();
         });
+
+        window.filterGallery = (cat) => { currentFilter = cat; renderGallery(); };
 
         function renderGallery() {
             const filtered = currentFilter === 'All' ? photos : photos.filter(p => p.category === currentFilter);
