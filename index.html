@@ -10,25 +10,7 @@
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
         .gallery-item { transition: transform 0.3s ease-in-out; }
         .gallery-item:hover { transform: scale(1.02); }
-        
-        .bg-refined {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            min-height: 100vh;
-        }
-
-        .album-block {
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-        .album-bg {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            filter: blur(2px) brightness(0.7);
-            transform: scale(1.1);
-        }
+        .bg-refined { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
     </style>
 </head>
 <body class="bg-refined text-slate-100">
@@ -39,8 +21,7 @@
                 <a href="#" class="text-xl font-bold tracking-tight uppercase text-emerald-400">Haroon Abdullah</a>
                 <div class="flex items-center gap-6">
                     <a href="#about" class="text-sm font-medium hover:text-emerald-400 transition">About</a>
-                    <a href="#albums" class="text-sm font-medium hover:text-emerald-400 transition">Albums</a>
-                    <a href="#gallery" class="text-sm font-medium hover:text-emerald-400 transition">Portfolio</a>
+                    <a href="#portfolio" class="text-sm font-medium hover:text-emerald-400 transition">Portfolio</a>
                     <button id="loginBtn" onclick="toggleAuthModal()" class="text-sm font-medium border border-slate-600 px-4 py-2 rounded-lg hover:bg-slate-800 transition">Login</button>
                     <div id="adminPanelControls" class="hidden flex items-center gap-4">
                         <div class="text-sm font-semibold text-emerald-400">Admin Mode</div>
@@ -52,19 +33,25 @@
     </nav>
 
     <main class="pt-32 pb-16">
-        <section class="max-w-7xl mx-auto px-4 text-center mb-24">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white">Visual Storytelling.</h1>
+        <section id="about" class="max-w-5xl mx-auto px-4 mb-24">
+            <h1 class="text-5xl md:text-7xl font-bold mb-12 text-white text-center">Visual Storytelling.</h1>
+            <div class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700 grid md:grid-cols-2 gap-8 items-center">
+                <div class="aspect-square rounded-2xl overflow-hidden bg-slate-900">
+                    <img src="https://i.ibb.co/QjK1bW26/haroon.jpg" alt="Haroon Abdullah" class="w-full h-full object-cover">
+                </div>
+                <p class="text-slate-300 leading-relaxed text-lg">
+                    "Every click is a conversation between light and emotion. I don't just take pictures; I frame moments that define the human experience. My mission is to ensure that when you look back at these photos years from now, you don't just see the image—you feel the energy, the passion, and the exact spirit of that moment."
+                </p>
+            </div>
         </section>
 
-        <section id="albums" class="max-w-7xl mx-auto px-4 mb-24">
-            <h2 class="text-2xl font-bold mb-8 text-center text-emerald-400">Featured Collections</h2>
-            <div id="albumGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
-
-        <section id="gallery" class="max-w-7xl mx-auto px-4 mb-8">
-            <h2 class="text-2xl font-bold mb-8 text-center text-emerald-400">Portfolio</h2>
-            <div id="filters" class="flex flex-wrap justify-center gap-2 mb-8">
-                <button onclick="filterGallery('All')" class="px-4 py-2 rounded-full border border-slate-600 hover:border-emerald-500 transition text-sm">All</button>
+        <section id="portfolio" class="max-w-7xl mx-auto px-4 mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center text-emerald-400">Portfolio</h2>
+            <div id="filters" class="flex flex-wrap justify-center gap-3 mb-8">
+                <!-- Filter buttons injected here -->
+            </div>
+            <div id="artistStatement" class="max-w-3xl mx-auto text-center mb-12 italic text-slate-400">
+                <!-- Statement injected here -->
             </div>
             <div id="photoGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
@@ -73,7 +60,6 @@
     <div id="adminSection" class="hidden max-w-7xl mx-auto px-4 py-12 border-t border-slate-800 bg-slate-900/50">
         <h2 class="text-2xl font-bold mb-8 text-emerald-400">Admin Dashboard</h2>
         <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-            <h3 class="text-lg font-semibold mb-4">Upload New Work</h3>
             <form id="uploadForm" class="flex flex-col gap-4">
                 <input type="text" id="imgUrl" placeholder="Image URL" required class="bg-slate-900 rounded-lg px-4 py-2 border border-slate-700 w-full">
                 <div class="flex gap-4">
@@ -83,9 +69,6 @@
                         <option value="Sports">Sports</option><option value="Landscapes">Landscapes</option><option value="Animals">Animals</option>
                     </select>
                 </div>
-                <label class="flex items-center gap-2 text-sm text-slate-300">
-                    <input type="checkbox" id="isCover" class="accent-emerald-500"> Set as Album Cover
-                </label>
                 <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg font-medium transition">Add Work</button>
             </form>
         </div>
@@ -105,7 +88,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyBcstkacDgmWaxgu9M-7HussMFu4NF624w", authDomain: "haroon-s-photography.firebaseapp.com", projectId: "haroon-s-photography", storageBucket: "haroon-s-photography.firebasestorage.app", messagingSenderId: "678628031192", appId: "1:678628031192:web:14a6b61e654f5f933bb5ad" };
         const appId = 'haroon-photography-app'; 
@@ -113,43 +96,48 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        let photos = [], albumCovers = {}, currentFilter = 'All', isAdmin = false;
+        const statements = {
+            "All": "Welcome to my archive. Every image here represents a chapter of a story I've had the honor of documenting.",
+            "Weddings": "Weddings are sacred—they are the fusion of two worlds. I focus on the stolen glances, the hidden tears, and the raw joy that define the start of a lifelong union.",
+            "Receptions": "When the formalities end, the pulse of the evening truly begins. I capture the rhythm, the laughter, and the uninhibited celebration that makes every reception unique.",
+            "Sports": "Sports is the art of speed and precision. I live for the split-second decisions and the sheer physicality of athletes pushing their limits.",
+            "Landscapes": "Nature speaks in a language of patience. I chase the light to find that perfect, fleeting connection between the earth and the heavens.",
+            "Animals": "In the eyes of an animal, there is a quiet, profound wisdom. I photograph them to bridge the gap between their world and our own, hoping to capture their untamed soul."
+        };
+
+        let photos = [], currentFilter = 'All', isAdmin = false;
+        const categories = ["All", "Weddings", "Receptions", "Sports", "Landscapes", "Animals"];
 
         onAuthStateChanged(auth, (user) => {
             isAdmin = !!user;
             document.getElementById('adminSection').classList.toggle('hidden', !isAdmin);
             document.getElementById('loginBtn').classList.toggle('hidden', isAdmin);
             document.getElementById('adminPanelControls').classList.toggle('hidden', !isAdmin);
-            renderGallery();
+            renderUI();
         });
 
         onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), (snapshot) => {
             photos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderGallery();
+            renderUI();
         });
 
-        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'albumCovers'), (snapshot) => {
-            albumCovers = {};
-            snapshot.docs.forEach(d => albumCovers[d.id] = d.data().src);
-            renderGallery();
-        });
+        window.filterGallery = (cat) => { currentFilter = cat; renderUI(); };
 
-        window.filterGallery = (cat) => { currentFilter = cat; renderGallery(); };
+        function renderUI() {
+            const filtersEl = document.getElementById('filters');
+            filtersEl.innerHTML = categories.map(cat => `
+                <button onclick="filterGallery('${cat}')" class="px-5 py-2 rounded-full border ${currentFilter === cat ? 'bg-emerald-600 border-emerald-600' : 'border-slate-600 hover:border-emerald-500'} transition text-sm">
+                    ${cat}
+                </button>
+            `).join('');
 
-        function renderGallery() {
+            document.getElementById('artistStatement').textContent = statements[currentFilter];
+
             const filtered = currentFilter === 'All' ? photos : photos.filter(p => p.category === currentFilter);
             document.getElementById('photoGrid').innerHTML = filtered.map(p => `
                 <div class="gallery-item relative group cursor-pointer overflow-hidden rounded-xl border border-slate-700" onclick="openLightbox('${p.src}')">
                     <img src="${p.src}" class="w-full h-80 object-cover">
                     ${isAdmin ? `<button onclick="event.stopPropagation(); deletePhoto('${p.id}')" class="absolute top-2 right-2 bg-red-600/90 p-2 rounded-full text-white text-xs">Delete</button>` : ''}
-                </div>
-            `).join('');
-
-            const cats = ["Weddings", "Receptions", "Sports", "Landscapes", "Animals"];
-            document.getElementById('albumGrid').innerHTML = cats.map(cat => `
-                <div class="album-block h-48 rounded-2xl border border-slate-700 flex flex-col justify-center items-center text-center cursor-pointer hover:border-emerald-500 transition" onclick="filterGallery('${cat}')">
-                    <div class="album-bg" style="background-image: url('${albumCovers[cat] || 'https://placehold.co/800x600/1e293b/ffffff?text=' + cat}')"></div>
-                    <span class="relative z-10 text-xl font-bold bg-slate-900/50 px-4 py-2 rounded-lg backdrop-blur-sm">${cat}</span>
                 </div>
             `).join('');
         }
@@ -166,15 +154,11 @@
         
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const src = document.getElementById('imgUrl').value;
-            const title = document.getElementById('imgTitle').value;
-            const category = document.getElementById('imgCategory').value;
-            const isCover = document.getElementById('isCover').checked;
-            
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), { src, title, category });
-            if(isCover) {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'albumCovers', category), { src });
-            }
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), { 
+                src: document.getElementById('imgUrl').value, 
+                title: document.getElementById('imgTitle').value, 
+                category: document.getElementById('imgCategory').value 
+            });
             e.target.reset();
         });
     </script>
